@@ -571,8 +571,8 @@ const SuccessScreen = ({
 
     <div className='bg-white p-4 rounded-md shadow-sm'>
       <div className='mb-4'>
-        <p className='text-gray-500 text-sm'>Date</p>
-        <p className='font-medium'>{formData.saleDate}</p>
+        <p className='font-medium text-gray-700 mb-2'>Date</p>
+        <p className='font-medium text-gray-900'>{formData.saleDate}</p>
       </div>
 
       <div className='space-y-4'>
@@ -639,7 +639,7 @@ const SuccessScreen = ({
               {formData.payOuts.map(
                 (payOut, index) =>
                   payOut.amount > 0 && (
-                    <p key={index} className='text-sm'>
+                    <p key={index} className='text-sm text-gray-900'>
                       {payOut.description}: -${payOut.amount.toFixed(2)}
                     </p>
                   )
@@ -657,9 +657,13 @@ const SuccessScreen = ({
         {formData.athAmount > 0 && (
           <div>
             <h3 className='font-medium text-gray-700 mb-2'>ATH Payment</h3>
-            <p className='text-sm'>Amount: ${formData.athAmount.toFixed(2)}</p>
+            <p className='text-sm text-gray-900'>
+              Amount: ${formData.athAmount.toFixed(2)}
+            </p>
             {formData.athReference && (
-              <p className='text-sm'>Reference: {formData.athReference}</p>
+              <p className='text-sm text-gray-900'>
+                Reference: {formData.athReference}
+              </p>
             )}
             <p className='text-sm font-medium text-gray-700 mt-2'>
               Subtotal: ${athSubtotal.toFixed(2)}
@@ -671,7 +675,7 @@ const SuccessScreen = ({
         {formData.lectureTotal > 0 && (
           <div>
             <h3 className='font-medium text-gray-700 mb-2'>Lecture Total</h3>
-            <p className='text-sm'>
+            <p className='text-sm text-gray-900'>
               Amount: ${formData.lectureTotal.toFixed(2)}
             </p>
             <p className='text-sm text-gray-500 mt-1'>
@@ -710,13 +714,13 @@ const TransactionSummarySection = ({
 
   return (
     <div>
-      <h3 className='font-medium text-gray-700 mb-2'>{title}</h3>
+      <h3 className='font-medium px-3 mb-2 text-gray-700'>{title}</h3>
       <div className='space-y-1'>
         {hasItems ? (
           items.map(
             (item, index) =>
               item.value > 0 && (
-                <p key={index} className='text-sm'>
+                <p key={index} className='text-sm text-gray-900'>
                   {item.label}
                   {item.value} = ${item.amount.toFixed(2)}
                 </p>
