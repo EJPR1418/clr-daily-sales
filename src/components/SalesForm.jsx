@@ -1,10 +1,10 @@
 // src/components/SalesForm.jsx
-import { useState, useEffect } from 'react';
-import { FormInput, SectionHeading, Subtotal } from './FormComponents';
+import { useState, useEffect } from "react";
+import { FormInput, SectionHeading, Subtotal } from "./FormComponents";
 
 export const SalesForm = () => {
   const [formData, setFormData] = useState({
-    saleDate: new Date().toISOString().split('T')[0],
+    saleDate: new Date().toISOString().split("T")[0],
     // Bills
     bill20: 0,
     bill10: 0,
@@ -17,13 +17,13 @@ export const SalesForm = () => {
     coin1: 0,
     // Pay Outs
     payOuts: [
-      { description: '', amount: 0 },
-      { description: '', amount: 0 },
-      { description: '', amount: 0 },
+      { description: "", amount: 0 },
+      { description: "", amount: 0 },
+      { description: "", amount: 0 },
     ],
     // ATH
     athAmount: 0,
-    athReference: '',
+    athReference: "",
     // Lecture Total
     lectureTotal: 0,
   });
@@ -51,15 +51,15 @@ export const SalesForm = () => {
     // Convert to number for bills, coins, and amounts
     let numValue = value;
     if (
-      name !== 'saleDate' &&
-      name !== 'athReference' &&
-      !name.startsWith('payOutDesc')
+      name !== "saleDate" &&
+      name !== "athReference" &&
+      !name.startsWith("payOutDesc")
     ) {
       numValue = parseFloat(value) || 0;
     }
 
     // Handle regular form fields
-    if (!name.includes('[')) {
+    if (!name.includes("[")) {
       setFormData({
         ...formData,
         [name]: numValue,
@@ -71,7 +71,7 @@ export const SalesForm = () => {
       if (matches && matches.length === 3) {
         const fieldName = matches[1];
         const index = parseInt(matches[2], 10);
-        const field = fieldName === 'payOutDesc' ? 'description' : 'amount';
+        const field = fieldName === "payOutDesc" ? "description" : "amount";
 
         const updatedPayOuts = [...formData.payOuts];
         updatedPayOuts[index] = {
@@ -99,7 +99,7 @@ export const SalesForm = () => {
     const newErrors = {};
 
     if (!formData.saleDate) {
-      newErrors.saleDate = 'Date is required';
+      newErrors.saleDate = "Date is required";
     }
 
     // Check if at least one bill, coin, or ATH is entered
@@ -116,14 +116,14 @@ export const SalesForm = () => {
 
     if (!hasValue) {
       newErrors.general =
-        'At least one bill, coin, or ATH amount must be entered';
+        "At least one bill, coin, or ATH amount must be entered";
     }
 
     // Validate pay out fields
     formData.payOuts.forEach((payOut, index) => {
       if (payOut.amount > 0 && !payOut.description.trim()) {
         newErrors[`payOutDesc[${index}]`] =
-          'Description is required when amount is entered';
+          "Description is required when amount is entered";
       }
     });
 
@@ -227,11 +227,11 @@ export const SalesForm = () => {
 
       // Make API call to API Gateway
       const response = await fetch(
-        'https://your-api-gateway-url/prod/transactions',
+        "https://vdy0uhu9bd.execute-api.us-east-1.amazonaws.com/dev/CreateSale",
         {
-          method: 'POST',
+          method: "POST",
           headers: {
-            'Content-Type': 'application/json',
+            "Content-Type": "application/json",
             // Add any authentication headers if needed
             // 'Authorization': `Bearer ${token}`
           },
@@ -242,21 +242,21 @@ export const SalesForm = () => {
       if (!response.ok) {
         // Handle error responses
         const errorData = await response.json();
-        throw new Error(errorData.message || 'Failed to submit transaction');
+        throw new Error(errorData.message || "Failed to submit transaction");
       }
 
       // Get the response data
       const responseData = await response.json();
 
       // Store transaction ID or other response data if needed
-      setTransactionId(responseData.transactionId);
-
+      // setTransactionId(responseData.transactionId);
+      console.log(responseData);
       // Set submission success
       setIsSubmitted(true);
     } catch (error) {
-      console.error('Error submitting transaction:', error);
+      console.error("Error submitting transaction:", error);
       setSubmissionError(
-        error.message || 'Failed to submit transaction. Please try again.'
+        error.message || "Failed to submit transaction. Please try again."
       );
     } finally {
       setIsLoading(false);
@@ -265,7 +265,7 @@ export const SalesForm = () => {
 
   const resetForm = () => {
     setFormData({
-      saleDate: new Date().toISOString().split('T')[0],
+      saleDate: new Date().toISOString().split("T")[0],
       bill20: 0,
       bill10: 0,
       bill5: 0,
@@ -275,12 +275,12 @@ export const SalesForm = () => {
       coin5: 0,
       coin1: 0,
       payOuts: [
-        { description: '', amount: 0 },
-        { description: '', amount: 0 },
-        { description: '', amount: 0 },
+        { description: "", amount: 0 },
+        { description: "", amount: 0 },
+        { description: "", amount: 0 },
       ],
       athAmount: 0,
-      athReference: '',
+      athReference: "",
       lectureTotal: 0,
     });
     setBillsSubtotal(0);
@@ -314,18 +314,18 @@ export const SalesForm = () => {
   }
 
   return (
-    <div className='max-w-md mx-auto p-6 bg-white rounded-lg shadow-lg'>
-      <h2 className='text-2xl font-bold text-gray-800 mb-6'>
+    <div className="max-w-md mx-auto p-6 bg-white rounded-lg shadow-lg">
+      <h2 className="text-2xl font-bold text-gray-800 mb-6">
         Cash Transaction
       </h2>
 
-      <div className='space-y-4'>
+      <div className="space-y-4">
         {/* Date */}
         <FormInput
-          id='saleDate'
-          name='saleDate'
-          label='Date'
-          type='date'
+          id="saleDate"
+          name="saleDate"
+          label="Date"
+          type="date"
           value={formData.saleDate}
           onChange={handleChange}
           error={errors.saleDate}
@@ -333,7 +333,7 @@ export const SalesForm = () => {
         />
 
         {errors.general && (
-          <p className='text-sm text-red-600 font-medium'>{errors.general}</p>
+          <p className="text-sm text-red-600 font-medium">{errors.general}</p>
         )}
 
         {/* Bills Section */}
@@ -373,28 +373,28 @@ export const SalesForm = () => {
         />
 
         {/* Total */}
-        <div className='pt-4 border-t border-gray-200'>
-          <div className='flex justify-between items-center'>
-            <span className='text-lg font-medium text-gray-700'>
+        <div className="pt-4 border-t border-gray-200">
+          <div className="flex justify-between items-center">
+            <span className="text-lg font-medium text-gray-700">
               Net Total:
             </span>
-            <span className='text-xl font-bold text-green-600'>
+            <span className="text-xl font-bold text-green-600">
               ${total.toFixed(2)}
             </span>
           </div>
-          <p className='text-xs text-gray-500 mt-1'>
+          <p className="text-xs text-gray-500 mt-1">
             (Income from bills, coins, and ATH minus pay outs)
           </p>
         </div>
 
         {/* Submit Button with Loading State */}
-        <div className='pt-6'>
+        <div className="pt-6">
           {submissionError && (
-            <div className='mb-4 p-3 bg-red-50 text-red-700 rounded-md border border-red-200'>
-              <p className='text-sm font-medium'>{submissionError}</p>
+            <div className="mb-4 p-3 bg-red-50 text-red-700 rounded-md border border-red-200">
+              <p className="text-sm font-medium">{submissionError}</p>
               <button
                 onClick={() => setSubmissionError(null)}
-                className='text-xs text-red-500 underline mt-1'
+                className="text-xs text-red-500 underline mt-1"
               >
                 Dismiss
               </button>
@@ -407,36 +407,36 @@ export const SalesForm = () => {
             className={`w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white 
       ${
         isLoading
-          ? 'bg-indigo-400 cursor-not-allowed'
-          : 'bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500'
+          ? "bg-indigo-400 cursor-not-allowed"
+          : "bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
       }`}
           >
             {isLoading ? (
-              <span className='flex items-center'>
+              <span className="flex items-center">
                 <svg
-                  className='animate-spin -ml-1 mr-3 h-5 w-5 text-white'
-                  xmlns='http://www.w3.org/2000/svg'
-                  fill='none'
-                  viewBox='0 0 24 24'
+                  className="animate-spin -ml-1 mr-3 h-5 w-5 text-white"
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
                 >
                   <circle
-                    className='opacity-25'
-                    cx='12'
-                    cy='12'
-                    r='10'
-                    stroke='currentColor'
-                    strokeWidth='4'
+                    className="opacity-25"
+                    cx="12"
+                    cy="12"
+                    r="10"
+                    stroke="currentColor"
+                    strokeWidth="4"
                   ></circle>
                   <path
-                    className='opacity-75'
-                    fill='currentColor'
-                    d='M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z'
+                    className="opacity-75"
+                    fill="currentColor"
+                    d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
                   ></path>
                 </svg>
                 Processing...
               </span>
             ) : (
-              'Complete Transaction'
+              "Complete Transaction"
             )}
           </button>
         </div>
@@ -447,120 +447,120 @@ export const SalesForm = () => {
 
 // Helper section components
 const BillsSection = ({ formData, handleChange, billsSubtotal }) => (
-  <div className='pt-4 border-t border-gray-200'>
-    <SectionHeading title='Bills' />
+  <div className="pt-4 border-t border-gray-200">
+    <SectionHeading title="Bills" />
 
-    <div className='grid grid-cols-2 gap-4'>
+    <div className="grid grid-cols-2 gap-4">
       <FormInput
-        id='bill20'
-        name='bill20'
-        label='$20 Bills'
-        type='number'
-        min='0'
+        id="bill20"
+        name="bill20"
+        label="$20 Bills"
+        type="number"
+        min="0"
         value={formData.bill20}
         onChange={handleChange}
       />
 
       <FormInput
-        id='bill10'
-        name='bill10'
-        label='$10 Bills'
-        type='number'
-        min='0'
+        id="bill10"
+        name="bill10"
+        label="$10 Bills"
+        type="number"
+        min="0"
         value={formData.bill10}
         onChange={handleChange}
       />
 
       <FormInput
-        id='bill5'
-        name='bill5'
-        label='$5 Bills'
-        type='number'
-        min='0'
+        id="bill5"
+        name="bill5"
+        label="$5 Bills"
+        type="number"
+        min="0"
         value={formData.bill5}
         onChange={handleChange}
       />
 
       <FormInput
-        id='bill1'
-        name='bill1'
-        label='$1 Bills'
-        type='number'
-        min='0'
+        id="bill1"
+        name="bill1"
+        label="$1 Bills"
+        type="number"
+        min="0"
         value={formData.bill1}
         onChange={handleChange}
       />
     </div>
 
-    <Subtotal label='Subtotal' amount={billsSubtotal} />
+    <Subtotal label="Subtotal" amount={billsSubtotal} />
   </div>
 );
 
 const CoinsSection = ({ formData, handleChange, coinsSubtotal }) => (
-  <div className='pt-4 border-t border-gray-200'>
-    <SectionHeading title='Coins' />
+  <div className="pt-4 border-t border-gray-200">
+    <SectionHeading title="Coins" />
 
-    <div className='grid grid-cols-2 gap-4'>
+    <div className="grid grid-cols-2 gap-4">
       <FormInput
-        id='coin25'
-        name='coin25'
-        label='Quarters (25¢)'
-        type='number'
-        min='0'
+        id="coin25"
+        name="coin25"
+        label="Quarters (25¢)"
+        type="number"
+        min="0"
         value={formData.coin25}
         onChange={handleChange}
       />
 
       <FormInput
-        id='coin10'
-        name='coin10'
-        label='Dimes (10¢)'
-        type='number'
-        min='0'
+        id="coin10"
+        name="coin10"
+        label="Dimes (10¢)"
+        type="number"
+        min="0"
         value={formData.coin10}
         onChange={handleChange}
       />
 
       <FormInput
-        id='coin5'
-        name='coin5'
-        label='Nickels (5¢)'
-        type='number'
-        min='0'
+        id="coin5"
+        name="coin5"
+        label="Nickels (5¢)"
+        type="number"
+        min="0"
         value={formData.coin5}
         onChange={handleChange}
       />
 
       <FormInput
-        id='coin1'
-        name='coin1'
-        label='Pennies (1¢)'
-        type='number'
-        min='0'
+        id="coin1"
+        name="coin1"
+        label="Pennies (1¢)"
+        type="number"
+        min="0"
         value={formData.coin1}
         onChange={handleChange}
       />
     </div>
 
-    <Subtotal label='Subtotal' amount={coinsSubtotal} />
+    <Subtotal label="Subtotal" amount={coinsSubtotal} />
   </div>
 );
 
 const PayOutsSection = ({ formData, handleChange, errors, payOutSubtotal }) => (
-  <div className='pt-4 border-t border-gray-200'>
-    <SectionHeading title='Pay Outs' />
+  <div className="pt-4 border-t border-gray-200">
+    <SectionHeading title="Pay Outs" />
 
     {formData.payOuts.map((payOut, index) => (
-      <div key={index} className='mb-4 pb-3 border-b border-gray-100'>
-        <h4 className='text-sm font-medium text-gray-700 mb-2'>
+      <div key={index} className="mb-4 pb-3 border-b border-gray-100">
+        <h4 className="text-sm font-medium text-gray-700 mb-2">
           Pay Out #{index + 1}
         </h4>
-        <div className='space-y-3'>
+        <div className="space-y-3">
           <FormInput
             id={`payOutDesc[${index}]`}
             name={`payOutDesc[${index}]`}
-            label='Description'
-            placeholder='e.g., Vendor payment, Refund, etc.'
+            label="Description"
+            placeholder="e.g., Vendor payment, Refund, etc."
             value={payOut.description}
             onChange={handleChange}
             error={errors[`payOutDesc[${index}]`]}
@@ -569,10 +569,10 @@ const PayOutsSection = ({ formData, handleChange, errors, payOutSubtotal }) => (
           <FormInput
             id={`payOutAmount[${index}]`}
             name={`payOutAmount[${index}]`}
-            label='Amount ($)'
-            type='number'
-            min='0'
-            step='0.01'
+            label="Amount ($)"
+            type="number"
+            min="0"
+            step="0.01"
             value={payOut.amount}
             onChange={handleChange}
           />
@@ -580,66 +580,66 @@ const PayOutsSection = ({ formData, handleChange, errors, payOutSubtotal }) => (
       </div>
     ))}
 
-    <Subtotal label='Subtotal' amount={payOutSubtotal} isNegative={true} />
+    <Subtotal label="Subtotal" amount={payOutSubtotal} isNegative={true} />
   </div>
 );
 
 const AthSection = ({ formData, handleChange, athSubtotal }) => (
-  <div className='pt-4 border-t border-gray-200'>
-    <SectionHeading title='ATH Payment' />
+  <div className="pt-4 border-t border-gray-200">
+    <SectionHeading title="ATH Payment" />
 
-    <div className='space-y-3'>
+    <div className="space-y-3">
       <FormInput
-        id='athAmount'
-        name='athAmount'
-        label='Amount ($)'
-        type='number'
-        min='0'
-        step='0.01'
+        id="athAmount"
+        name="athAmount"
+        label="Amount ($)"
+        type="number"
+        min="0"
+        step="0.01"
         value={formData.athAmount}
         onChange={handleChange}
       />
 
       <FormInput
-        id='athReference'
-        name='athReference'
-        label='Reference Number'
-        placeholder='e.g., Transaction ID, Receipt Number, etc.'
+        id="athReference"
+        name="athReference"
+        label="Reference Number"
+        placeholder="e.g., Transaction ID, Receipt Number, etc."
         value={formData.athReference}
         onChange={handleChange}
       />
     </div>
 
-    <Subtotal label='Subtotal' amount={athSubtotal} />
+    <Subtotal label="Subtotal" amount={athSubtotal} />
   </div>
 );
 
 const LectureSection = ({ formData, handleChange, lectureSubtotal }) => (
-  <div className='pt-4 border-t border-gray-200'>
-    <SectionHeading title='Lecture Total' />
+  <div className="pt-4 border-t border-gray-200">
+    <SectionHeading title="Lecture Total" />
 
-    <div className='space-y-3'>
+    <div className="space-y-3">
       <FormInput
-        id='lectureTotal'
-        name='lectureTotal'
-        label='Amount ($)'
-        type='number'
-        min='0'
-        step='0.01'
+        id="lectureTotal"
+        name="lectureTotal"
+        label="Amount ($)"
+        type="number"
+        min="0"
+        step="0.01"
         value={formData.lectureTotal}
         onChange={handleChange}
       />
     </div>
 
-    <div className='mt-3 flex justify-between'>
-      <div className='flex items-center'>
-        <span className='text-xs text-gray-500'>
+    <div className="mt-3 flex justify-between">
+      <div className="flex items-center">
+        <span className="text-xs text-gray-500">
           (For information only, not included in Net Total)
         </span>
       </div>
-      <div className='flex items-center'>
-        <span className='text-sm font-medium text-gray-700 mr-2'>Amount:</span>
-        <span className='font-medium text-gray-600'>
+      <div className="flex items-center">
+        <span className="text-sm font-medium text-gray-700 mr-2">Amount:</span>
+        <span className="font-medium text-gray-600">
           ${lectureSubtotal.toFixed(2)}
         </span>
       </div>
@@ -658,118 +658,118 @@ const SuccessScreen = ({
   transactionId,
   onNewTransaction,
 }) => (
-  <div className='max-w-md mx-auto p-6 bg-green-50 rounded-lg shadow-md'>
-    <div className='text-center mb-6'>
-      <div className='inline-flex items-center justify-center w-12 h-12 rounded-full bg-green-100 text-green-500 mb-4'>
+  <div className="max-w-md mx-auto p-6 bg-green-50 rounded-lg shadow-md">
+    <div className="text-center mb-6">
+      <div className="inline-flex items-center justify-center w-12 h-12 rounded-full bg-green-100 text-green-500 mb-4">
         <svg
-          className='w-6 h-6'
-          fill='none'
-          stroke='currentColor'
-          viewBox='0 0 24 24'
-          xmlns='http://www.w3.org/2000/svg'
+          className="w-6 h-6"
+          fill="none"
+          stroke="currentColor"
+          viewBox="0 0 24 24"
+          xmlns="http://www.w3.org/2000/svg"
         >
           <path
-            strokeLinecap='round'
-            strokeLinejoin='round'
+            strokeLinecap="round"
+            strokeLinejoin="round"
             strokeWidth={2}
-            d='M5 13l4 4L19 7'
+            d="M5 13l4 4L19 7"
           />
         </svg>
       </div>
-      <h2 className='text-2xl font-bold text-green-700'>
+      <h2 className="text-2xl font-bold text-green-700">
         Transaction Completed!
       </h2>
-      <p className='text-green-600 mt-2'>
+      <p className="text-green-600 mt-2">
         Your cash transaction has been successfully recorded.
       </p>
       {transactionId && (
-        <p className='text-sm text-green-800 mt-2'>
-          Transaction ID:{' '}
-          <span className='font-mono font-medium'>{transactionId}</span>
+        <p className="text-sm text-green-800 mt-2">
+          Transaction ID:{" "}
+          <span className="font-mono font-medium">{transactionId}</span>
         </p>
       )}
     </div>
 
-    <div className='bg-white p-4 rounded-md shadow-sm'>
-      <div className='mb-4'>
-        <p className='font-medium text-gray-700 mb-2'>Date</p>
-        <p className='font-medium text-gray-900'>{formData.saleDate}</p>
+    <div className="bg-white p-4 rounded-md shadow-sm">
+      <div className="mb-4">
+        <p className="font-medium text-gray-700 mb-2">Date</p>
+        <p className="font-medium text-gray-900">{formData.saleDate}</p>
       </div>
 
-      <div className='space-y-4'>
+      <div className="space-y-4">
         <TransactionSummarySection
-          title='Bills'
+          title="Bills"
           items={[
             {
-              label: '$20 × ',
+              label: "$20 × ",
               value: formData.bill20,
               amount: formData.bill20 * 20,
             },
             {
-              label: '$10 × ',
+              label: "$10 × ",
               value: formData.bill10,
               amount: formData.bill10 * 10,
             },
             {
-              label: '$5 × ',
+              label: "$5 × ",
               value: formData.bill5,
               amount: formData.bill5 * 5,
             },
             {
-              label: '$1 × ',
+              label: "$1 × ",
               value: formData.bill1,
               amount: formData.bill1 * 1,
             },
           ]}
           subtotal={billsSubtotal}
-          emptyMessage='No bills'
+          emptyMessage="No bills"
         />
 
         <TransactionSummarySection
-          title='Coins'
+          title="Coins"
           items={[
             {
-              label: '25¢ × ',
+              label: "25¢ × ",
               value: formData.coin25,
               amount: formData.coin25 * 0.25,
             },
             {
-              label: '10¢ × ',
+              label: "10¢ × ",
               value: formData.coin10,
               amount: formData.coin10 * 0.1,
             },
             {
-              label: '5¢ × ',
+              label: "5¢ × ",
               value: formData.coin5,
               amount: formData.coin5 * 0.05,
             },
             {
-              label: '1¢ × ',
+              label: "1¢ × ",
               value: formData.coin1,
               amount: formData.coin1 * 0.01,
             },
           ]}
           subtotal={coinsSubtotal}
-          emptyMessage='No coins'
+          emptyMessage="No coins"
         />
 
         <div>
-          <h3 className='font-medium text-gray-700 mb-2'>Pay Outs</h3>
+          <h3 className="font-medium text-gray-700 mb-2">Pay Outs</h3>
           {formData.payOuts.some((p) => p.amount > 0) ? (
-            <div className='space-y-1'>
+            <div className="space-y-1">
               {formData.payOuts.map(
                 (payOut, index) =>
                   payOut.amount > 0 && (
-                    <p key={index} className='text-sm text-gray-900'>
+                    <p key={index} className="text-sm text-gray-900">
                       {payOut.description}: -${payOut.amount.toFixed(2)}
                     </p>
                   )
               )}
             </div>
           ) : (
-            <p className='text-sm text-gray-400'>No pay outs</p>
+            <p className="text-sm text-gray-400">No pay outs</p>
           )}
-          <p className='text-sm font-medium text-gray-700 mt-2'>
+          <p className="text-sm font-medium text-gray-700 mt-2">
             Subtotal: -${payOutSubtotal.toFixed(2)}
           </p>
         </div>
@@ -777,16 +777,16 @@ const SuccessScreen = ({
         {/* ATH Payment */}
         {formData.athAmount > 0 && (
           <div>
-            <h3 className='font-medium text-gray-700 mb-2'>ATH Payment</h3>
-            <p className='text-sm text-gray-900'>
+            <h3 className="font-medium text-gray-700 mb-2">ATH Payment</h3>
+            <p className="text-sm text-gray-900">
               Amount: ${formData.athAmount.toFixed(2)}
             </p>
             {formData.athReference && (
-              <p className='text-sm text-gray-900'>
+              <p className="text-sm text-gray-900">
                 Reference: {formData.athReference}
               </p>
             )}
-            <p className='text-sm font-medium text-gray-700 mt-2'>
+            <p className="text-sm font-medium text-gray-700 mt-2">
               Subtotal: ${athSubtotal.toFixed(2)}
             </p>
           </div>
@@ -795,21 +795,21 @@ const SuccessScreen = ({
         {/* Lecture Total */}
         {formData.lectureTotal > 0 && (
           <div>
-            <h3 className='font-medium text-gray-700 mb-2'>Lecture Total</h3>
-            <p className='text-sm text-gray-900'>
+            <h3 className="font-medium text-gray-700 mb-2">Lecture Total</h3>
+            <p className="text-sm text-gray-900">
               Amount: ${formData.lectureTotal.toFixed(2)}
             </p>
-            <p className='text-sm text-gray-500 mt-1'>
+            <p className="text-sm text-gray-500 mt-1">
               (For information only, not included in Net Total)
             </p>
           </div>
         )}
       </div>
 
-      <div className='pt-4 mt-4 border-t border-gray-200'>
-        <div className='flex justify-between items-center'>
-          <span className='text-lg font-medium text-gray-700'>Net Total:</span>
-          <span className='text-xl font-bold text-green-600'>
+      <div className="pt-4 mt-4 border-t border-gray-200">
+        <div className="flex justify-between items-center">
+          <span className="text-lg font-medium text-gray-700">Net Total:</span>
+          <span className="text-xl font-bold text-green-600">
             ${total.toFixed(2)}
           </span>
         </div>
@@ -818,7 +818,7 @@ const SuccessScreen = ({
 
     <button
       onClick={onNewTransaction}
-      className='mt-6 w-full py-2 px-4 bg-green-600 hover:bg-green-700 text-white font-medium rounded-md shadow-sm transition-colors'
+      className="mt-6 w-full py-2 px-4 bg-green-600 hover:bg-green-700 text-white font-medium rounded-md shadow-sm transition-colors"
     >
       New Transaction
     </button>
@@ -835,23 +835,23 @@ const TransactionSummarySection = ({
 
   return (
     <div>
-      <h3 className='font-medium px-3 mb-2 text-gray-700'>{title}</h3>
-      <div className='space-y-1'>
+      <h3 className="font-medium px-3 mb-2 text-gray-700">{title}</h3>
+      <div className="space-y-1">
         {hasItems ? (
           items.map(
             (item, index) =>
               item.value > 0 && (
-                <p key={index} className='text-sm text-gray-900'>
+                <p key={index} className="text-sm text-gray-900">
                   {item.label}
                   {item.value} = ${item.amount.toFixed(2)}
                 </p>
               )
           )
         ) : (
-          <p className='text-sm text-gray-400'>{emptyMessage}</p>
+          <p className="text-sm text-gray-400">{emptyMessage}</p>
         )}
       </div>
-      <p className='text-sm font-medium text-gray-700 mt-2'>
+      <p className="text-sm font-medium text-gray-700 mt-2">
         Subtotal: ${subtotal.toFixed(2)}
       </p>
     </div>
