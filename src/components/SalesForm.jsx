@@ -224,7 +224,7 @@ export const SalesForm = () => {
         netTotal: total,
         timestamp: new Date().toISOString(),
       };
-
+      // console.log(dataToSubmit);
       // Make API call to API Gateway
       const response = await fetch(
         "https://vdy0uhu9bd.execute-api.us-east-1.amazonaws.com/dev/CreateSale",
