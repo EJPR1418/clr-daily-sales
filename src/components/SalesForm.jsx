@@ -26,6 +26,7 @@ export const SalesForm = () => {
     athReference: "",
     // Lecture Total
     lectureTotal: 0,
+    pettyCash: 0,
   });
 
   const [errors, setErrors] = useState({});
@@ -36,6 +37,7 @@ export const SalesForm = () => {
   const [athSubtotal, setAthSubtotal] = useState(0);
   const [lectureSubtotal, setLectureSubtotal] = useState(0);
   const [total, setTotal] = useState(0);
+  const [pettyCashSubtotal, setPettyCashSubtotal] = useState(0);
 
   const [isLoading, setIsLoading] = useState(false);
   const [submissionError, setSubmissionError] = useState(null);
@@ -157,19 +159,24 @@ export const SalesForm = () => {
     // Lecture total (for display only, not included in grand total)
     const lectureTotal = formData.lectureTotal || 0;
 
+    // Petty Cash
+    const pettyCashTotal = formData.pettyCash || 0;
+
     // Round to 2 decimal places
     const roundedBillsTotal = Math.round(billsTotal * 100) / 100;
     const roundedCoinsTotal = Math.round(coinsTotal * 100) / 100;
     const roundedPayOutTotal = Math.round(payOutTotal * 100) / 100;
     const roundedAthTotal = Math.round(athTotal * 100) / 100;
     const roundedLectureTotal = Math.round(lectureTotal * 100) / 100;
+    const roundedPettyCashTotal = Math.round(pettyCashTotal * 100) / 100;
 
-    // Calculate grand total (not including lecture)
+    // Calculate grand total (income - payout - petty cash)
     const grandTotal =
       roundedBillsTotal +
       roundedCoinsTotal +
       roundedAthTotal -
-      roundedPayOutTotal;
+      roundedPayOutTotal -
+      roundedPettyCashTotal;
     const roundedGrandTotal = Math.round(grandTotal * 100) / 100;
 
     setBillsSubtotal(roundedBillsTotal);
@@ -177,7 +184,18 @@ export const SalesForm = () => {
     setPayOutSubtotal(roundedPayOutTotal);
     setAthSubtotal(roundedAthTotal);
     setLectureSubtotal(roundedLectureTotal);
+    setPettyCashSubtotal(roundedPettyCashTotal);
     setTotal(roundedGrandTotal);
+
+    return {
+      billsSubtotal: roundedBillsTotal,
+      coinsSubtotal: roundedCoinsTotal,
+      payOutSubtotal: roundedPayOutTotal,
+      athSubtotal: roundedAthTotal,
+      lectureSubtotal: roundedLectureTotal,
+      pettyCashSubtotal: roundedPettyCashTotal,
+      total: roundedGrandTotal,
+    };
   };
 
   const handleSubmit = async (e) => {
@@ -221,6 +239,7 @@ export const SalesForm = () => {
           subtotal: athSubtotal,
         },
         lectureTotal: formData.lectureTotal,
+        pettyCash: formData.pettyCash,
         netTotal: total,
         timestamp: new Date().toISOString(),
       };
@@ -239,18 +258,48 @@ export const SalesForm = () => {
         }
       );
 
-      if (!response.ok) {
-        // Handle error responses
-        const errorData = await response.json();
-        throw new Error(errorData.message || "Failed to submit transaction");
+      // Read the response text
+      const responseText = await response.text();
+      console.log("Raw response text:", responseText);
+
+      // Parse the response text
+      let responseData;
+      try {
+        responseData = JSON.parse(responseText);
+        console.log("Parsed response data:", responseData);
+      } catch (parseError) {
+        console.error("Error parsing response:", parseError);
+        throw new Error("Invalid response format from server");
       }
 
-      // Get the response data
-      const responseData = await response.json();
+      // Extract transaction ID
+      let transactionId = null;
 
-      // Store transaction ID or other response data if needed
-      // setTransactionId(responseData.transactionId);
-      console.log(responseData);
+      if (responseData.body) {
+        try {
+          // If body is a string, parse it
+          const bodyData =
+            typeof responseData.body === "string"
+              ? JSON.parse(responseData.body)
+              : responseData.body;
+
+          transactionId = bodyData.transactionId;
+          console.log("Extracted transactionId:", transactionId);
+        } catch (bodyParseError) {
+          console.error("Error parsing body:", bodyParseError);
+        }
+      } else if (responseData.transactionId) {
+        // If transactionId is directly in the response
+        transactionId = responseData.transactionId;
+      }
+
+      if (!transactionId) {
+        console.warn("No transactionId found in response");
+      }
+
+      // Store transaction ID
+      setTransactionId(transactionId);
+
       // Set submission success
       setIsSubmitted(true);
     } catch (error) {
@@ -288,8 +337,8 @@ export const SalesForm = () => {
     setPayOutSubtotal(0);
     setAthSubtotal(0);
     setLectureSubtotal(0);
+    setPettyCashSubtotal(0);
     setTotal(0);
-    setIsSubmitted(false);
     setIsLoading(false);
     setSubmissionError(null);
     setTransactionId(null);
@@ -306,6 +355,7 @@ export const SalesForm = () => {
         payOutSubtotal={payOutSubtotal}
         athSubtotal={athSubtotal}
         lectureSubtotal={lectureSubtotal}
+        pettyCashSubtotal={pettyCashSubtotal}
         total={total}
         transactionId={transactionId}
         onNewTransaction={resetForm}
@@ -372,6 +422,13 @@ export const SalesForm = () => {
           lectureSubtotal={lectureSubtotal}
         />
 
+        {/* Petty Cash Section */}
+        <PettyCashSection
+          formData={formData}
+          handleChange={handleChange}
+          pettyCashSubtotal={pettyCashSubtotal}
+        />
+
         {/* Total */}
         <div className="pt-4 border-t border-gray-200">
           <div className="flex justify-between items-center">
@@ -383,7 +440,7 @@ export const SalesForm = () => {
             </span>
           </div>
           <p className="text-xs text-gray-500 mt-1">
-            (Income from bills, coins, and ATH minus pay outs)
+            (Income from bills, coins, and ATH minus pay outs and petty cash)
           </p>
         </div>
 
@@ -614,6 +671,36 @@ const AthSection = ({ formData, handleChange, athSubtotal }) => (
   </div>
 );
 
+const PettyCashSection = ({ formData, handleChange, pettyCashSubtotal }) => (
+  <div className="pt-4 border-t border-gray-200">
+    <SectionHeading title="Petty Cash" />
+
+    <div className="space-y-3">
+      <FormInput
+        id="pettyCash"
+        name="pettyCash"
+        label="Amount ($)"
+        type="number"
+        min="0"
+        step="0.01"
+        value={formData.pettyCash}
+        onChange={handleChange}
+      />
+    </div>
+
+    <div className="mt-3 flex justify-end">
+      <div className="flex items-center">
+        <span className="text-sm font-medium text-gray-700 mr-2">
+          Subtotal:
+        </span>
+        <span className="font-medium text-red-600">
+          -${pettyCashSubtotal.toFixed(2)}
+        </span>
+      </div>
+    </div>
+  </div>
+);
+
 const LectureSection = ({ formData, handleChange, lectureSubtotal }) => (
   <div className="pt-4 border-t border-gray-200">
     <SectionHeading title="Lecture Total" />
@@ -654,6 +741,7 @@ const SuccessScreen = ({
   payOutSubtotal,
   athSubtotal,
   lectureSubtotal,
+  pettyCashSubtotal,
   total,
   transactionId,
   onNewTransaction,
@@ -786,9 +874,9 @@ const SuccessScreen = ({
                 Reference: {formData.athReference}
               </p>
             )}
-            <p className="text-sm font-medium text-gray-700 mt-2">
+            {/* <p className="text-sm font-medium text-gray-700 mt-2">
               Subtotal: ${athSubtotal.toFixed(2)}
-            </p>
+            </p> */}
           </div>
         )}
 
@@ -802,6 +890,19 @@ const SuccessScreen = ({
             <p className="text-sm text-gray-500 mt-1">
               (For information only, not included in Net Total)
             </p>
+          </div>
+        )}
+
+        {/* Petty Cash */}
+        {formData.pettyCash > 0 && (
+          <div>
+            <h3 className="font-medium text-gray-700 mb-2">Petty Cash</h3>
+            <p className="text-sm text-gray-900">
+              Amount: -${formData.pettyCash.toFixed(2)}
+            </p>
+            {/* <p className="text-sm font-medium text-gray-700 mt-2">
+              Subtotal: -${pettyCashSubtotal.toFixed(2)}
+            </p> */}
           </div>
         )}
       </div>
