@@ -424,18 +424,18 @@ export const SalesForm = () => {
           athSubtotal={athSubtotal}
         />
 
-        {/* Lecture Total Section */}
-        <LectureSection
-          formData={formData}
-          handleChange={handleChange}
-          lectureSubtotal={lectureSubtotal}
-        />
-
         {/* Petty Cash Section */}
         <PettyCashSection
           formData={formData}
           handleChange={handleChange}
           pettyCashSubtotal={pettyCashSubtotal}
+        />
+
+        {/* Lecture Total Section */}
+        <LectureSection
+          formData={formData}
+          handleChange={handleChange}
+          lectureSubtotal={lectureSubtotal}
         />
 
         {/* Total */}
@@ -888,6 +888,19 @@ const SuccessScreen = ({
             </p> */}
           </div>
         )}
+        
+        {/* Petty Cash */}
+        {formData.pettyCash > 0 && (
+          <div>
+            <h3 className="font-medium text-gray-700 mb-2">Petty Cash</h3>
+            <p className="text-sm text-gray-900">
+              Amount: -${formData.pettyCash.toFixed(2)}
+            </p>
+            {/* <p className="text-sm font-medium text-gray-700 mt-2">
+              Subtotal: -${pettyCashSubtotal.toFixed(2)}
+            </p> */}
+          </div>
+        )}        
 
         {/* Lecture Total */}
         {formData.lectureTotal > 0 && (
@@ -899,19 +912,6 @@ const SuccessScreen = ({
             <p className="text-sm text-gray-500 mt-1">
               (For information only, not included in Net Total)
             </p>
-          </div>
-        )}
-
-        {/* Petty Cash */}
-        {formData.pettyCash > 0 && (
-          <div>
-            <h3 className="font-medium text-gray-700 mb-2">Petty Cash</h3>
-            <p className="text-sm text-gray-900">
-              Amount: -${formData.pettyCash.toFixed(2)}
-            </p>
-            {/* <p className="text-sm font-medium text-gray-700 mt-2">
-              Subtotal: -${pettyCashSubtotal.toFixed(2)}
-            </p> */}
           </div>
         )}
       </div>
