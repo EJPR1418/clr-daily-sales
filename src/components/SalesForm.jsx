@@ -1,10 +1,19 @@
 // src/components/SalesForm.jsx
 import { useState, useEffect } from "react";
 import { FormInput, SectionHeading, Subtotal } from "./FormComponents";
+import { format, formatISO } from "date-fns";
+
+const getLocalDateString = () => {
+  return format(new Date(), "yyyy-MM-dd");
+};
+
+const getISODateString = () => {
+  return formatISO(new Date());
+};
 
 export const SalesForm = () => {
   const [formData, setFormData] = useState({
-    saleDate: new Date().toISOString().split("T")[0],
+    saleDate: getLocalDateString(), //toISOString().split("T")[0],
     // Bills
     bill20: 0,
     bill10: 0,
@@ -241,7 +250,7 @@ export const SalesForm = () => {
         lectureTotal: formData.lectureTotal,
         pettyCash: formData.pettyCash,
         netTotal: total,
-        timestamp: new Date().toISOString(),
+        timestamp: getISODateString(),
       };
       // console.log(dataToSubmit);
       // Make API call to API Gateway
@@ -314,7 +323,7 @@ export const SalesForm = () => {
 
   const resetForm = () => {
     setFormData({
-      saleDate: new Date().toISOString().split("T")[0],
+      saleDate: getLocalDateString(),
       bill20: 0,
       bill10: 0,
       bill5: 0,
