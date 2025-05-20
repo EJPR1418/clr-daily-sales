@@ -54,7 +54,7 @@ export const SalesForm = () => {
 
   useEffect(() => {
     calculateSubtotals();
-  }, [formData]);
+  });
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -888,7 +888,7 @@ const SuccessScreen = ({
             </p> */}
           </div>
         )}
-        
+
         {/* Petty Cash */}
         {formData.pettyCash > 0 && (
           <div>
