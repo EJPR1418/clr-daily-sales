@@ -269,13 +269,13 @@ export const SalesForm = () => {
 
       // Read the response text
       const responseText = await response.text();
-      console.log("Raw response text:", responseText);
+      // console.log("Raw response text:", responseText);
 
       // Parse the response text
       let responseData;
       try {
         responseData = JSON.parse(responseText);
-        console.log("Parsed response data:", responseData);
+        // console.log("Parsed response data:", responseData);
       } catch (parseError) {
         console.error("Error parsing response:", parseError);
         throw new Error("Invalid response format from server");
@@ -293,7 +293,7 @@ export const SalesForm = () => {
               : responseData.body;
 
           transactionId = bodyData.transactionId;
-          console.log("Extracted transactionId:", transactionId);
+          // console.log("Extracted transactionId:", transactionId);
         } catch (bodyParseError) {
           console.error("Error parsing body:", bodyParseError);
         }
