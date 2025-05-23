@@ -6,6 +6,22 @@ import { SalesForm } from "./components/SalesForm";
 import { Authenticator } from "@aws-amplify/ui-react";
 import "@aws-amplify/ui-react/styles.css";
 
+// Customize the form labels
+// const formFields = {
+//   signIn: {
+//     username: {
+//       placeholder: "Enter your email address",
+//       label: "Email Address",
+//     },
+//   },
+//   signUp: {
+//     username: {
+//       placeholder: "Enter your email address",
+//       label: "Email Address",
+//     },
+//   },
+// };
+
 function App() {
   return (
     <div className="App">

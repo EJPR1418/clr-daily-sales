@@ -10,8 +10,11 @@ Amplify.configure({
       userPoolId: "us-east-1_n84YveCLs",
       userPoolClientId: "5sovu2fdflgvrur96sa30vjiel",
       loginWith: {
+        email: true,
+        username: false,
         oauth: {
-          domain: "your-cognito-domain.auth.us-east-1.amazoncognito.com",
+          domain:
+            "https://cognito-idp.us-east-1.amazonaws.com/us-east-1_n84YveCLs",
           scopes: ["openid", "email", "profile"],
           redirectSignIn: ["https://d84l1y8p4kdic.cloudfront.net"],
           redirectSignOut: ["https://d84l1y8p4kdic.cloudfront.net"],
