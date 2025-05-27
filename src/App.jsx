@@ -4,8 +4,9 @@ import viteLogo from "/vite.svg";
 import "./App.css";
 import { Authenticator } from "@aws-amplify/ui-react";
 import { Amplify } from "aws-amplify";
-import outputs from "@/amplify_outputs.json";
+import outputs from "../amplify_outputs.json";
 import { SalesForm } from "./components/SalesForm";
+import "@aws-amplify/ui-react/styles.css";
 
 Amplify.configure(outputs);
 
@@ -15,11 +16,9 @@ function App() {
       <Authenticator>
         {({ signOut, user }) => (
           <main>
-            <div style={{ padding: "20px", textAlign: "center" }}>
-              <h2>Welcome, {user.username}!</h2>
-              <button onClick={signOut} style={{ marginBottom: "20px" }}>
-                Sign out
-              </button>
+            <div>
+              <h1>Hello {user?.username}</h1>
+              <button onClick={signOut}>Sign out</button>
             </div>
             <SalesForm />
           </main>
