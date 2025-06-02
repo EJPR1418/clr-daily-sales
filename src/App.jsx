@@ -6,7 +6,7 @@ import { SalesForm } from "./components/SalesForm";
 import "@aws-amplify/ui-react/styles.css";
 
 // Amplify.configure(outputs);
-
+//test 
 function App() {
   return (
     <div className="App">
